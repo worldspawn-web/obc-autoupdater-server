@@ -1,9 +1,12 @@
 import express from 'express';
 import fs from 'node:fs';
 import path from 'node:path';
+import crypto from 'node:crypto';
 
 const app = express();
 const port = 3000;
+
+app.use(express.json());
 
 const folderPath = path.resolve(process.cwd(), 'files');
 
@@ -27,6 +30,42 @@ app.get('/files', (req, res) => {
     });
     res.json(fileDetails);
   });
+});
+
+app.post('/files', (req, res) => {
+  const { clientFiles } = req.body;
+  const mismatchedFiles = [];
+
+  clientFiles.forEach((filename) => {
+    if (filename.endsWith('.scs')) {
+      const serverFilepath = path.join(folderPath, filename);
+      const clientFilepath = path.join(folderPath, filename);
+
+      if (fs.existsSync(serverFilepath) && fs.existsSync(clientFilepath)) {
+        const serverFileContent = fs.readFileSync(serverFilepath);
+        const clientFileContent = fs.readFileSync(clientFilepath);
+
+        const serverFileHash = crypto
+          .createHash('md5')
+          .update(serverFileContent)
+          .digest('hex');
+        const clientFileHash = crypto
+          .createHash('md5')
+          .update(clientFileContent)
+          .digest('hex');
+
+        if (serverFileHash !== clientFileHash) {
+          mismatchedFiles.push(filename);
+        }
+      }
+    }
+  });
+
+  if (mismatchedFiles.length > 0) {
+    res.json({ mismatchedFiles });
+  } else {
+    res.json({ message: 'Files are up to date.' });
+  }
 });
 
 app.listen(port, () => {
