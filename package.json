@@ -1,0 +1,23 @@
+{
+  "name": "obc-modmanager-server",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/worldspawn-web/obc-modmanager-server.git"
+  },
+  "author": "Worldspawn",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/worldspawn-web/obc-modmanager-server/issues"
+  },
+  "homepage": "https://github.com/worldspawn-web/obc-modmanager-server#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
